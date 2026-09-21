@@ -533,7 +533,7 @@ $productos = [
         "nombre" => "Monitor",
         "categoria" => "Monitores",
         "precio" => 19090,
-        "stock" => 5
+        "stock" => 0
     ]
 
 ];

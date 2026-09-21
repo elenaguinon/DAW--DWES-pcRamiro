@@ -251,6 +251,19 @@ require_once "datos.php";
 
                 </p>
 
+                <p class="estado <?= obtenerClaseEstado($producto["stock"]); ?>">
+
+
+
+                    Estado:
+
+                    <?=
+                        // Mostramos el stock disponible.
+                        obtenerEstadoStock($producto["stock"]);
+                    ?>
+
+                </p>
+
 
             </article>
 
