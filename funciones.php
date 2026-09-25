@@ -557,55 +557,405 @@ function buscarProductoPorId(array $productos, int $id): ?array
     return null;
 }
 
-function normalizarTexto(string $texto): string
-{
-        $texto = trim($texto);
+function normalizarTexto(string $texto): string {
+    $texto = trim($texto);
 
-        // mb_strtolower
-        //strtolower
+    //mb_strtolower
+    //strtolower
 
-        if (function_exists("mb_strtolower")){
-            return mb_strtolower($texto,"UTF-8"(strin));
-        }
+   /* if(function_exists("mb_strtolower")){
+        return mb_strtolower($texto, "UTF-8"(strin));
+    }*/
 
-        return strtolower($texto);   
+    return strtolower($texto);
 
-
-
+    //return function_exists("mb_strtolower") ? mb_strtolower($texto, "UTF-8"(strin)) : strtolower($texto);
 }
 
-function buscarProductos ( 
-    array $productos,  
+/**
+ * Busca productos cuyo nombre contenga el texto indicado.
+ *
+ * La función recibe:
+ *
+ * 1. Un array con productos.
+ * 2. Una cadena con el texto que queremos buscar.
+ *
+ * Devuelve un nuevo array únicamente con los productos
+ * que coincidan con la búsqueda.
+ *
+ * Ejemplo:
+ *
+ * $productos = [
+ *     ["nombre" => "Champú"],
+ *     ["nombre" => "Gel"],
+ *     ["nombre" => "Champú anticaspa"]
+ * ];
+ *
+ * buscarProductos($productos, "champu");
+ *
+ * podría devolver:
+ *
+ * [
+ *     ["nombre" => "Champú"],
+ *     ["nombre" => "Champú anticaspa"]
+ * ]
+ *
+ * @param array  $productos Array que contiene los productos.
+ * @param string $busqueda  Texto que queremos buscar.
+ *
+ * @return array Productos que coinciden con la búsqueda.
+ */
+function buscarProductos(
+    array $productos,
     string $busqueda
-    ): array {
+): array {
 
+    /*
+     * Creamos un array vacío donde iremos almacenando
+     * los productos que coincidan con la búsqueda.
+     *
+     * Al principio no hemos encontrado ninguno:
+     *
+     * $resultados = [];
+     */
     $resultados = [];
 
+
+    /*
+     * Normalizamos el texto introducido por el usuario.
+     *
+     * normalizarTexto() NO es una función estándar de PHP,
+     * por lo que tiene que estar definida en otra parte
+     * de nuestro programa.
+     *
+     * Su objetivo probablemente sea hacer que las búsquedas
+     * sean más fáciles de comparar.
+     *
+     * Por ejemplo, podría transformar:
+     *
+     * "  CHAMPÚ  "
+     *
+     * en:
+     *
+     * "champu"
+     *
+     * Dependiendo de cómo esté implementada normalizarTexto(),
+     * podría:
+     *
+     * - eliminar espacios al principio y al final;
+     * - convertir a minúsculas;
+     * - eliminar tildes;
+     * - etc.
+     *
+     * IMPORTANTE:
+     * No podemos asegurar exactamente qué hace sin ver
+     * la función normalizarTexto().
+     */
     $busqueda = normalizarTexto($busqueda);
 
-    if ($busqueda === ""){
+
+    /*
+     * Comprobamos si, después de normalizar el texto,
+     * la búsqueda está vacía.
+     *
+     * === es el operador de comparación estricta.
+     *
+     * Comprueba tanto:
+     *
+     * - el valor
+     * - como el tipo
+     *
+     * En este caso queremos comprobar que $busqueda
+     * sea exactamente el string vacío "".
+     */
+    if ($busqueda === "") {
+
+        /*
+         * Si el usuario no ha escrito nada,
+         * devolvemos directamente el array vacío.
+         *
+         * Como:
+         *
+         * $resultados = [];
+         *
+         * estamos devolviendo:
+         *
+         * []
+         *
+         * Además, return termina inmediatamente
+         * la ejecución de la función.
+         */
         return $resultados;
     }
 
-    foreach ($productos as $producto){
+
+    /*
+     * Recorremos todos los productos.
+     *
+     * En cada vuelta del foreach:
+     *
+     * $producto
+     *
+     * contendrá uno de los elementos de $productos.
+     *
+     * Por ejemplo, si tenemos:
+     *
+     * $productos = [
+     *     ["nombre" => "Champú"],
+     *     ["nombre" => "Gel"]
+     * ];
+     *
+     * Primera vuelta:
+     *
+     * $producto = ["nombre" => "Champú"]
+     *
+     * Segunda vuelta:
+     *
+     * $producto = ["nombre" => "Gel"]
+     */
+    foreach ($productos as $producto) {
+
+
+        /*
+         * Accedemos al nombre del producto:
+         *
+         * $producto["nombre"]
+         *
+         * y posteriormente lo normalizamos.
+         *
+         * De esta forma estamos comparando dos textos
+         * normalizados:
+         *
+         * $nombre
+         * $busqueda
+         *
+         * Por ejemplo:
+         *
+         * "CHAMPÚ" -> "champu"
+         * "Champu" -> "champu"
+         *
+         * Esto permite que la búsqueda sea más flexible,
+         * dependiendo de lo que haga normalizarTexto().
+         */
         $nombre = normalizarTexto($producto["nombre"]);
 
-        if (str_contains($nombre, $busqueda)){
+
+        /*
+         * str_contains() comprueba si una cadena
+         * contiene otra cadena.
+         *
+         * Sintaxis:
+         *
+         * str_contains(textoCompleto, textoBuscado)
+         *
+         * Devuelve un boolean:
+         *
+         * true  -> si lo encuentra.
+         * false -> si no lo encuentra.
+         *
+         * Por ejemplo:
+         *
+         * str_contains("champu anticaspa", "champu")
+         *
+         * devuelve:
+         *
+         * true
+         */
+        if (str_contains($nombre, $busqueda)) {
+
+
+            /*
+             * Si hemos encontrado una coincidencia,
+             * añadimos el producto al array $resultados.
+             *
+             * La sintaxis:
+             *
+             * $array[] = $valor;
+             *
+             * significa:
+             *
+             * "Añade este elemento al final del array".
+             *
+             * Por ejemplo:
+             *
+             * $resultados = [];
+             *
+             * $resultados[] = $producto1;
+             *
+             * Ahora:
+             *
+             * $resultados = [
+             *     $producto1
+             * ];
+             */
             $resultados[] = $producto;
         }
-
-
     }
 
+
+    /*
+     * Una vez recorridos TODOS los productos,
+     * devolvemos los que hayan coincidido.
+     *
+     * Si no encontramos ninguno, simplemente
+     * devolveremos:
+     *
+     * []
+     */
     return $resultados;
 }
 
+
+
+/**
+ * Obtiene una cadena de texto de un array de forma segura.
+ *
+ * Esta función intenta obtener el valor asociado a una clave.
+ *
+ * Si:
+ *
+ * - la clave no existe, o
+ * - el valor existe pero NO es un string,
+ *
+ * devuelve una cadena vacía "".
+ *
+ * Esta función puede ser especialmente útil para leer
+ * información procedente de formularios.
+ *
+ * Por ejemplo:
+ *
+ * leerCadena($_GET, "buscar");
+ *
+ * o:
+ *
+ * leerCadena($_POST, "nombre");
+ *
+ *
+  */
+
 function leerCadena(
+    array $origen,
+    string $clave
+): string {
 
-        array $origen,
-        string $clave
+    /*
+     * Intentamos obtener del array el elemento
+     * correspondiente a $clave.
+     *
+     * Por ejemplo:
+     *
+     * $origen = [
+     *     "nombre" => "Pepe",
+     *     "edad" => 25
+     * ];
+     *
+     * Si:
+     *
+     * $clave = "nombre";
+     *
+     * entonces:
+     *
+     * $origen[$clave]
+     *
+     * equivale a:
+     *
+     * $origen["nombre"]
+     *
+     * y obtendríamos:
+     *
+     * "Pepe"
+     */
 
-): string   {
 
+    /*
+     * El operador:
+     *
+     * ??
+     *
+     * se llama operador de coalescencia nula
+     * (null coalescing operator).
+     *
+     * Básicamente estamos diciendo:
+     *
+     * "Obtén $origen[$clave], pero si no existe
+     * o es null, utiliza ""."
+     *
+     * Por ejemplo:
+     *
+     * $origen = ["nombre" => "Ana"];
+     *
+     * $origen["nombre"] ?? ""
+     *
+     * Resultado:
+     *
+     * "Ana"
+     *
+     *
+     * Pero:
+     *
+     * $origen["telefono"] ?? ""
+     *
+     * Como "telefono" no existe:
+     *
+     * Resultado:
+     *
+     * ""
+     *
+     * Esto evita problemas al intentar acceder directamente
+     * a claves que podrían no existir.
+     */
+    $valor = $origen[$clave] ?? "";
+
+
+    /*
+     * is_string() comprueba si una variable contiene
+     * específicamente una cadena de texto.
+     *
+     * Devuelve:
+     *
+     * true  -> si es string.
+     * false -> si no es string.
+     *
+     * El operador ! significa negación.
+     *
+     * Por tanto:
+     *
+     * !is_string($valor)
+     *
+     * significa:
+     *
+     * "Si $valor NO es un string..."
+     */
+    if (!is_string($valor)) {
+
+        /*
+         * Si el valor no es una cadena,
+         * devolvemos una cadena vacía.
+         *
+         * Ejemplo:
+         *
+         * $origen = [
+         *     "edad" => 30
+         * ];
+         *
+         * leerCadena($origen, "edad");
+         *
+         * Como 30 es un integer y NO un string,
+         * devolvería:
+         *
+         * ""
+         */
+        return "";
+    }
+
+
+    /*
+     * Si hemos llegado hasta aquí significa que:
+     *
+     * 1. Hemos obtenido un valor.
+     * 2. Ese valor es un string.
+     *
+     * Por tanto podemos devolverlo.
+     */
+    return $valor;
 }
-
