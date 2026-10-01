@@ -391,8 +391,7 @@ $productos = [
          * guardados utilizando UTF-8.
          */
 
-        "categoria" => "Periféricos",
-
+         "categoria" => "Periféricos",
 
         /*
          * PRECIO

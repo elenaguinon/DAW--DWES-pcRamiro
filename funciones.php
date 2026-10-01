@@ -13,6 +13,7 @@
 //     Indica que el parámetro debe ser un número entero.
 //
 // : string
+// string, int, float 3.14
 //     Indica que la función devolverá un string.
 
 function formatearPrecio(int $centimos): string
@@ -25,6 +26,9 @@ function formatearPrecio(int $centimos): string
     // 2999 / 100 = 29.99
 
     $euros = $centimos / 100;
+
+
+    
 
 
     // number_format() permite dar formato a un número.
