@@ -777,6 +777,8 @@ if ($orden === "nombre") {
 
                 </p>
 
+                <a class="boton" href="producto.php?id= <?= $producto["id"] ?> " >Ver Producto</a>
+
 
             </article>
 
